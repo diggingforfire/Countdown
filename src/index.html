@@ -1,0 +1,205 @@
+<html>
+<head>
+	<title>
+		Candidate Countdown
+	</title>
+	<style>
+		body {
+			text-align: center;
+
+			font-family: sans-serif;
+			font-weight: 100;
+			margin: 0;
+		}
+
+		.closed > h1 {
+			color: #fff;
+			font-weight: 100;
+			text-align: center;
+			font-size: 12rem;
+		}
+
+		h1 {
+			color: #396;
+			font-weight: 100;
+			font-size: 40px;
+		}
+
+		#clock {
+			font-family: tahoma;
+			color: #fff;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-weight: 100;
+			text-align: center;
+			font-size: 16rem;
+			height: 100%;
+		}
+
+		#clock > div > div {
+			padding: 30px;
+			border-radius: 3px;
+			display: inline-block;
+			margin-bottom: 10%;
+			width: 20rem;
+		}
+
+		#clock div > div > span {
+			padding: 15px;
+			margin: 0;
+			border-radius: 3px;
+			display: inline-block;
+			width: 18rem;
+		}
+
+		.smalltext {
+			padding-top: 5px;
+			font-size: 3rem;
+		}
+
+		.days-container {
+			margin-right: 15px !important;
+		}
+	</style>
+</head>
+<body>
+
+<div id="clock">
+	<div class="open">
+		<div class="days-container">
+			<span class="days"></span>
+			<div class="smalltext">Days</div>
+		</div>
+		<div class="hours-container">
+			<span class="hours"></span>
+			<div class="smalltext">Hours</div>
+		</div>
+		<div class="minutes-container">
+			<span class="minutes"></span>
+			<div class="smalltext">Minutes</div>
+		</div>
+		<div class="seconds-container">
+			<span class="seconds"></span>
+			<div class="smalltext">Seconds</div>
+		</div>
+	</div>
+	
+	<div class="closed" style="display: none;">
+		<h1>Candidate is closed</h1>
+	</div>
+</div>
+
+<script>
+
+	document.addEventListener('DOMContentLoaded',
+		function() {
+
+			var deadline = getParameterByName("deadline");
+		
+			var clock = document.getElementById("clock");
+
+			var open = document.getElementsByClassName("open")[0];
+			var closed = document.getElementsByClassName("closed")[0];
+
+			var daysSpan = clock.querySelector('.days');
+			var hoursSpan = clock.querySelector('.hours');
+			var minutesSpan = clock.querySelector('.minutes');
+			var secondsSpan = clock.querySelector('.seconds');
+
+			update();
+
+			var interval = setInterval(update, 1000);
+
+			function update() {
+				if (deadline) {
+					var t = getTimeRemaining(deadline);
+
+					var colorScheme = getColorSchemeForRemainingTime(t);
+
+					document.body.style.background = colorScheme.primaryColor;
+
+					document.getElementsByClassName('days-container')[0].style.background = colorScheme.secondaryColor;
+					document.getElementsByClassName('days')[0].style.background = colorScheme.tertiaryColor;
+
+					document.getElementsByClassName('hours-container')[0].style.background = colorScheme.secondaryColor;
+					document.getElementsByClassName('hours')[0].style.background = colorScheme.tertiaryColor;
+
+					document.getElementsByClassName('minutes-container')[0].style.background = colorScheme.secondaryColor;
+					document.getElementsByClassName('minutes')[0].style.background = colorScheme.tertiaryColor;
+
+					document.getElementsByClassName('seconds-container')[0].style.background = colorScheme.secondaryColor;
+					document.getElementsByClassName('seconds')[0].style.background = colorScheme.tertiaryColor;
+
+					daysSpan.innerHTML = t.days;
+					hoursSpan.innerHTML = t.hours;
+					minutesSpan.innerHTML = t.minutes && ('0' + t.minutes).slice(-2);
+					secondsSpan.innerHTML = t.seconds && ('0' + t.seconds).slice(-2);
+
+					if (t.total <= 0) {
+						clearInterval(interval);
+
+						open.style.display = "none";	
+						closed.style.display = "block";
+
+					}
+				}
+			}
+
+		});
+
+	function getColorSchemeForRemainingTime(remainingTime) {
+		var primaryColor;
+		var secondaryColor;
+		var tertiaryColor;
+
+		if (remainingTime.days > 4) {
+			primaryColor = "#00ECB9";
+			secondaryColor = "#00BF96";
+			tertiaryColor = "#00816A";
+		} else if (remainingTime.days <= 4 && remainingTime.days > 0) {
+			primaryColor = "#FFA500";
+			secondaryColor = "#FF7011";
+			tertiaryColor = "#FF3E38";
+		} else {
+			primaryColor = "#FF0000";
+			secondaryColor = "#CC0000";
+			tertiaryColor = "#990000";
+		}
+
+		return {
+			'primaryColor': primaryColor,
+			'secondaryColor': secondaryColor,
+			'tertiaryColor': tertiaryColor
+		};
+	}
+
+	function getTimeRemaining(endtime) {
+		var t = Date.parse(endtime) - Date.parse(new Date());
+		var seconds = Math.floor((t / 1000) % 60);
+		var minutes = Math.floor((t / 1000 / 60) % 60);
+		var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+		var days = Math.floor(t / (1000 * 60 * 60 * 24));
+		return {
+			'total': t,
+			'days': days,
+			'hours': hours,
+			'minutes': minutes,
+			'seconds': seconds
+		};
+	}
+
+	function getParameterByName(name, url) {
+		if (!url) {
+			url = window.location.href;
+		}
+		name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+			results = regex.exec(url);
+		if (!results) return null;
+		if (!results[2]) return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+</script>
+</body>
+</html>
