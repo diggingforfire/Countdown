@@ -25,15 +25,15 @@
 		}
 		
 		.open {
-			margin-bottom: 120px;
+			margin-bottom: 150px;
 		}
 
-		.open-title {
+		.open-title, .batman {
 			color: #fff;
 			font-weight: 100;
 			font-size: 12rem;
 			margin: 0;
-			margin-bottom: 50px;
+			margin-bottom: 60px;
 		}
 
 		#clock {
@@ -100,6 +100,8 @@
 	<div class="closed-container" style="display: none;">
 		<h1 class="closed"></h1>
 	</div>
+	
+	<h1 style="display: none;" class="batman">BATMAN!!!</h1>
 </div>
 
 <script>
@@ -117,6 +119,8 @@
 			var opened = document.getElementsByClassName("open-title")[0];
 			opened.innerHTML = openTitle;
 			document.title = openTitle;
+
+			var batman = document.getElementsByClassName("batman")[0];
 
 			var clock = document.getElementById("clock");
 
@@ -163,6 +167,11 @@
 						open.style.display = "none";
 						opened.style.display = "none";
 						closedContainer.style.display = "block";
+					}
+
+					if (isNaN(t.days)) {
+						opened.style.display = "none";
+						batman.style.display = "block";
 					}
 				}
 			}
