@@ -1,7 +1,6 @@
 <html>
 <head>
 	<title>
-		Candidate Countdown
 	</title>
 	<style>
 		body {
@@ -12,7 +11,7 @@
 			margin: 0;
 		}
 
-		.closed > h1 {
+		.closed-container > h1 {
 			color: #fff;
 			font-weight: 100;
 			text-align: center;
@@ -24,11 +23,24 @@
 			font-weight: 100;
 			font-size: 40px;
 		}
+		
+		.open {
+			margin-bottom: 120px;
+		}
+
+		.open-title {
+			color: #fff;
+			font-weight: 100;
+			font-size: 12rem;
+			margin: 0;
+			margin-bottom: 50px;
+		}
 
 		#clock {
 			font-family: tahoma;
 			color: #fff;
 			display: flex;
+			flex-direction: column;
 			justify-content: center;
 			align-items: center;
 			font-weight: 100;
@@ -41,7 +53,6 @@
 			padding: 30px;
 			border-radius: 3px;
 			display: inline-block;
-			margin-bottom: 10%;
 			width: 20rem;
 		}
 
@@ -66,6 +77,7 @@
 <body>
 
 <div id="clock">
+	<h1 class="open-title"></h1> 
 	<div class="open">
 		<div class="days-container">
 			<span class="days"></span>
@@ -84,9 +96,9 @@
 			<div class="smalltext">Seconds</div>
 		</div>
 	</div>
-	
-	<div class="closed" style="display: none;">
-		<h1>Candidate is closed</h1>
+
+	<div class="closed-container" style="display: none;">
+		<h1 class="closed"></h1>
 	</div>
 </div>
 
@@ -96,11 +108,19 @@
 		function() {
 
 			var deadline = getParameterByName("deadline");
-		
+			var openTitle = getParameterByName("openTitle");
+			var closedTitle = getParameterByName("closedTitle") || "Deadline reached";
+
+			var closed = document.getElementsByClassName("closed")[0];
+			closed.innerHTML = closedTitle;
+
+			var opened = document.getElementsByClassName("open-title")[0];
+			opened.innerHTML = openTitle;
+
 			var clock = document.getElementById("clock");
 
 			var open = document.getElementsByClassName("open")[0];
-			var closed = document.getElementsByClassName("closed")[0];
+			var closedContainer = document.getElementsByClassName("closed-container")[0];
 
 			var daysSpan = clock.querySelector('.days');
 			var hoursSpan = clock.querySelector('.hours');
@@ -139,9 +159,9 @@
 					if (t.total <= 0) {
 						clearInterval(interval);
 
-						open.style.display = "none";	
-						closed.style.display = "block";
-
+						open.style.display = "none";
+						opened.style.display = "none";
+						closedContainer.style.display = "block";
 					}
 				}
 			}
